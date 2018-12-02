@@ -11,7 +11,7 @@ int main() {
     std::vector<int> fileIntegers;
     inputFile.open("../inputs/day1.txt");
     std::istream_iterator<int> input(inputFile);
-    std::copy (input, std::istream_iterator<int>(), std::back_inserter(fileIntegers));
+    std::copy(input, std::istream_iterator<int>(), std::back_inserter(fileIntegers));
 
     // part 1
     int totalResult = 0;

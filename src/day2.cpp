@@ -11,14 +11,14 @@ int main() {
     std::vector<std::string> fileStrings;
     inputFile.open("../inputs/day2.txt");
     std::istream_iterator<std::string> input(inputFile);
-    std::copy (input, std::istream_iterator<std::string>(), std::back_inserter(fileStrings));
+    std::copy(input, std::istream_iterator<std::string>(), std::back_inserter(fileStrings));
+    std::sort(fileStrings.begin(), fileStrings.end());
 
+    // part 1
     std::vector<char> alphabet(26);
     std::iota(alphabet.begin(), alphabet.end(), 'a');
-
     int twoLetters = 0;
     int threeLetters = 0;
-
     for (std::string str : fileStrings) {
         bool twoChars = false;
         bool threeChars = false;
@@ -32,14 +32,11 @@ int main() {
             if (twoChars && threeChars)
                 break;
         }
-
         if (twoChars)
             ++twoLetters;
         if (threeChars)
             ++threeLetters;
     }
-
     std::cout << twoLetters << " * " << threeLetters << " = " << twoLetters * threeLetters << "\n";
-
     return 0;
 }
