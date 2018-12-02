@@ -38,5 +38,41 @@ int main() {
             ++threeLetters;
     }
     std::cout << twoLetters << " * " << threeLetters << " = " << twoLetters * threeLetters << "\n";
+
+    // part 2
+    bool found = false;
+    int lhsIndex = 0;
+    int rhsIndex = 0;
+    for (int i = 0; i < fileStrings.size(); ++i) {
+        for (int j = (i + 1); j < fileStrings.size(); ++j) {
+            int numOfDiffs = 0;
+            std::string lhs = fileStrings[i];
+            std::string rhs = fileStrings[j];
+            for (int i = 0; i < lhs.length(); ++i) {
+                if (lhs[i] != rhs[i])
+                    ++numOfDiffs;
+                if (numOfDiffs == 2)
+                    break;
+            }
+            if (numOfDiffs == 1) {
+                found = true;
+                lhsIndex = i;
+                rhsIndex = j;
+                break;
+            }
+        }
+        if (found)
+            break;
+    }
+
+    std::string lhsString = fileStrings[lhsIndex];
+    std::string rhsString = fileStrings[rhsIndex];
+    std::string commonString = lhsString;
+    for (int i = 0; i < lhsString.size(); ++i) {
+            if (lhsString[i] != rhsString[i])
+                commonString.erase(commonString.begin() + i);
+    }
+    std::cout << "Found common chars: " << lhsString << " " << rhsString << ": " << commonString << "\n";
+
     return 0;
 }
