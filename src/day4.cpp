@@ -77,5 +77,26 @@ int main() {
     }
   }
 
+  // part 2
+  guardsAsleep.clear();
+  for (auto pair : timesAsleep) {
+    auto maxEl = std::max_element(pair.second.begin(), pair.second.end());
+    guardsAsleep.insert({pair.first, *maxEl});
+  }
+  auto maxEl =
+      std::max_element(guardsAsleep.begin(), guardsAsleep.end(),
+                       [](auto a, auto b) { return a.second < b.second; });
+  guardRecord =
+      std::find_if(timesAsleep.begin(), timesAsleep.end(),
+                   [&maxEl](auto p) { return p.first == maxEl->first; });
+
+  for (int i = 0; i < guardRecord->second.size(); ++i) {
+    if (guardRecord->second[i] == maxEl->second) {
+      std::cout << (maxEl->first) << " * " << i << " = " << (maxEl->first * i)
+                << "\n";
+      break;
+    }
+  }
+
   return 0;
 }
