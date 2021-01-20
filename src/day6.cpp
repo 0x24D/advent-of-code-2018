@@ -79,6 +79,50 @@ int main() {
         }
     }
     std::cout << "Largest finite area size: " << largestFiniteArea << "\n";
+
+    // Part 2
+    // Calculate sum of Manhattan distances
+    distanceMap[xMax + 1][yMax + 1] = {};
+    for (auto x = 0; x <= xMax; ++x) {
+        for (auto y = 0; y <= yMax; ++y) {
+            auto coord = std::find(coords.begin(), coords.end(), std::make_pair(x, y));
+            if (coord != coords.end()) {
+                distanceMap[x][y] = std::distance(coords.begin(), coord) + 1;
+                continue;
+            }
+            auto sum = 0;
+            for (auto c : coords) {
+                sum += (std::abs(x - c.first) + std::abs(y - c.second));
+            }
+            distanceMap[x][y] = sum;
+        }
+    }
+
+    constexpr auto MAX_DISTANCE = 10000;
+    auto areaSize = 0;
+    for (auto x = 0; x <= xMax; ++x) {
+        for (auto y = 0; y <= yMax; ++y) {
+            if (distanceMap[x][y] < MAX_DISTANCE) {
+                auto neighbours = 0;
+                if (x != 0 and distanceMap[x - 1][y] < MAX_DISTANCE) {
+                    ++neighbours;
+                }
+                if (x != xMax and distanceMap[x + 1][y] < MAX_DISTANCE) {
+                    ++neighbours;
+                }
+                if (y != 0 and distanceMap[x][y - 1] < MAX_DISTANCE) {
+                    ++neighbours;
+                }
+                if (y != yMax and distanceMap[x][y + 1] < MAX_DISTANCE) {
+                    ++neighbours;
+                }
+                if (neighbours != 0) {
+                    ++areaSize;
+                }
+            }
+        }
+    }
+    std::cout << "Size of region for locations with sum < " << MAX_DISTANCE << ": " << areaSize << "\n";
     return 0;
 }
     
