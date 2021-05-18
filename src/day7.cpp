@@ -18,9 +18,12 @@ int main() {
             stepsNeeded[postStep].insert(preStep);
         }
         inputFile.close();
+    } else {
+        std::cerr
+            << "Couldn't find input file, expected to run from root directory: e.g. ./bin/day-7\n";
+        return 1;
     }
-    
-    std::string steps;
+    std::string steps = "";
     std::set<char> nextSteps;
     // Get initial step
     for (auto p : stepsNeeded) {
@@ -37,8 +40,10 @@ int main() {
         std::set<char> followingSteps;
         for (auto it = stepsNeeded.begin(); it != stepsNeeded.end(); ++it) {
             if (it->second.find(*ch) != it->second.end()) {
-                if (std::all_of(stepsNeeded[it->first].begin(), stepsNeeded[it->first].end(), 
-                [&steps](auto c) {  return steps.find(c) != std::string::npos; })) { 
+                if (std::all_of(stepsNeeded[it->first].begin(), stepsNeeded[it->first].end(),
+                        [&steps](auto c) {
+                            return steps.find(c) != std::string::npos;
+                        })) {
                     nextSteps.insert(it->first);
                 }
             }

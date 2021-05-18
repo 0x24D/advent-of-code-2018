@@ -8,7 +8,7 @@
 int main() {
     std::deque<std::pair<int, int>> coords;
     std::ifstream inputFile;
-    inputFile.open("../inputs/day6.txt");
+    inputFile.open("inputs/day6.txt");
     if (inputFile.is_open()) {
         std::string line;
         while (std::getline(inputFile, line)) {
@@ -19,15 +19,23 @@ int main() {
             coords.emplace_back(std::make_pair(xCoord, yCoord));
         }
         inputFile.close();
+    } else {
+        std::cerr
+            << "Couldn't find input file, expected to run from root directory: e.g. ./bin/day-6\n";
+        return 1;
     }
 
     // Calculate Manhattan distances
-    auto xMax = (*std::max_element(coords.begin(), coords.end(), 
-        [](std::pair<int, int> a, std::pair<int, int> b) { return a.first < b.first; }
-                )).first;
-    auto yMax = (*std::max_element(coords.begin(), coords.end(), 
-        [](std::pair<int, int> a, std::pair<int, int> b) { return a.second < b.second; }
-                )).second;
+    auto xMax = (*std::max_element(coords.begin(), coords.end(),
+                     [](std::pair<int, int> a, std::pair<int, int> b) {
+                         return a.first < b.first;
+                     }))
+                    .first;
+    auto yMax = (*std::max_element(coords.begin(), coords.end(),
+                     [](std::pair<int, int> a, std::pair<int, int> b) {
+                         return a.second < b.second;
+                     }))
+                    .second;
     int distanceMap[xMax + 1][yMax + 1] = {};
     for (auto x = 0; x <= xMax; ++x) {
         for (auto y = 0; y <= yMax; ++y) {
@@ -62,7 +70,7 @@ int main() {
             infiniteAreas.emplace(distanceMap[x][yMax]);
         }
     }
-    
+
     auto largestFiniteArea = 0;
     for (auto i = 1; i <= coords.size(); ++i) {
         if (std::find(infiniteAreas.begin(), infiniteAreas.end(), i) != infiniteAreas.end()) {
@@ -122,8 +130,7 @@ int main() {
             }
         }
     }
-    std::cout << "Size of region for locations with sum < " << MAX_DISTANCE << ": " << areaSize << "\n";
+    std::cout << "Size of region for locations with sum < " << MAX_DISTANCE << ": " << areaSize
+              << "\n";
     return 0;
 }
-    
-
