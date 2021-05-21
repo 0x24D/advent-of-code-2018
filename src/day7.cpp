@@ -35,11 +35,11 @@ int main() {
     }
     // Calculate steps to end
     while (!nextSteps.empty()) {
-        const auto ch = nextSteps.begin();
-        steps += *ch;
+        const auto ch = *nextSteps.begin();
+        steps += ch;
         std::set<char> followingSteps;
         for (auto it = stepsNeeded.begin(); it != stepsNeeded.end(); ++it) {
-            if (it->second.find(*ch) != it->second.end()) {
+            if (it->second.find(ch) != it->second.end()) {
                 if (std::all_of(stepsNeeded[it->first].begin(), stepsNeeded[it->first].end(),
                         [&steps](auto c) {
                             return steps.find(c) != std::string::npos;
