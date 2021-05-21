@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <array>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -52,5 +53,65 @@ int main() {
     }
 
     std::cout << "Steps to take: " << steps << "\n";
+
+    // TODO: This works for the example but the answer is incorrect for the full input.
+    // Part 2
+    struct WorkerData {
+        unsigned int time = 0;
+        char step = '.';
+    };
+
+    constexpr auto STEP_DURATION = 60;
+    constexpr auto NUM_WORKERS = 5;
+    std::array<WorkerData, NUM_WORKERS> dataArr;
+    std::set<char> unblockedSteps{};
+    unsigned int clock = 0;
+
+    do {
+        for (auto i = 0; i < NUM_WORKERS; ++i) {
+            if (dataArr[i].time == 0) {
+                if (dataArr[i].step != '.') {
+                    for (auto& [step, prevSteps] : stepsNeeded) {
+                        prevSteps.erase(dataArr[i].step);
+                    }
+                }
+                if (unblockedSteps.empty()) {
+                    std::string newSteps{};
+                    for (const auto step : steps) {
+                        const auto& stepMap = stepsNeeded.find(step);
+                        if (stepMap == stepsNeeded.end() || stepMap->second.size() == 0) {
+                            if (stepMap != stepsNeeded.end()) {
+                                stepsNeeded.erase(stepMap);
+                            }
+                            newSteps += step;
+                            unblockedSteps.insert(step);
+                        }
+                    }
+                    for (const auto& step : newSteps) {
+                        steps.erase(steps.find(step), 1);
+                    }
+                }
+                if (unblockedSteps.empty()) {
+                    dataArr[i].step = '.';
+                    // dataArr[i].time is already 0
+                } else {
+                    dataArr[i].step = *unblockedSteps.begin();
+                    unblockedSteps.erase(dataArr[i].step);
+                    dataArr[i].time = STEP_DURATION + (dataArr[i].step - 'A') + 1;
+                }
+            }
+            if (dataArr[i].time != 0) {
+                --dataArr[i].time;
+            }
+        }
+        if (std::any_of(dataArr.cbegin(), dataArr.cend(), [](const auto& w) {
+                return w.step != '.';
+            })) {
+            ++clock;
+        }
+    } while (std::any_of(dataArr.cbegin(), dataArr.cend(), [](const auto& w) {
+        return w.step != '.';
+    }));
+    std::cout << "Time taken to complete all steps: " << clock << "\n";
     return 0;
 }
