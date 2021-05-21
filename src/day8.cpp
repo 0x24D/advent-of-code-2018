@@ -1,12 +1,12 @@
+#include <deque>
 #include <fstream>
 #include <iostream>
 #include <numeric>
 #include <utility>
-#include <vector>
 
 struct Node {
-    std::vector<Node> children;
-    std::vector<unsigned int> metadata;
+    std::deque<Node> children{};
+    std::deque<unsigned int> metadata{};
 };
 
 Node getNode(std::ifstream& inputFile) {
@@ -19,8 +19,6 @@ Node getNode(std::ifstream& inputFile) {
     inputFile >> numMetadata;
 
     Node node{};
-    node.children.reserve(numChildren);
-    node.metadata.reserve(numMetadata);
     for (auto i = 0; i < numChildren; ++i) {
         node.children.push_back(getNode(inputFile));
     }
@@ -34,10 +32,23 @@ Node getNode(std::ifstream& inputFile) {
 
 unsigned int getMetadataSum(const Node& node) {
     unsigned int sum = std::accumulate(node.metadata.cbegin(), node.metadata.cend(), 0);
-    for (size_t i = 0; i < node.children.size(); ++i) {
-        sum += getMetadataSum(node.children[i]);
+    for (const auto& child : node.children) {
+        sum += getMetadataSum(child);
     }
     return sum;
+}
+
+unsigned int getNodeValue(const Node& node) {
+    if (node.children.size() == 0) {
+        return getMetadataSum(node);
+    }
+    unsigned int value = 0;
+    for (auto m : node.metadata) {
+        if (m != 0 && m <= node.metadata.size()) {
+            value += getNodeValue(node.children[m - 1]);
+        }
+    }
+    return value;
 }
 
 int main() {
@@ -53,8 +64,11 @@ int main() {
         return 1;
     }
 
-    auto sum = getMetadataSum(node);
+    const auto sum = getMetadataSum(node);
     std::cout << "Sum of all metadata entries: " << std::to_string(sum) << '\n';
 
+    // Part 2
+    const auto value = getNodeValue(node);
+    std::cout << "Value of root node: " << std::to_string(value) << '\n';
     return 0;
 }
