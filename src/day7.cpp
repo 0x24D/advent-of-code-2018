@@ -7,7 +7,7 @@
 int main() {
     std::map<char, std::set<char>> stepsNeeded;
     std::ifstream inputFile;
-    inputFile.open("../inputs/day7.txt");
+    inputFile.open("inputs/day7.txt");
     if (inputFile.is_open()) {
         std::string line;
         while (std::getline(inputFile, line)) {
